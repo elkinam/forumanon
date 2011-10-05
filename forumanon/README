@@ -1,0 +1,99 @@
+                       ANONYMIZABLE FORUM PLUGIN
+                               version 1
+
+            Margarita Elkina, Ewgenij Starostin, Jonas Kipp
+                   Berlin School of Economics and Law
+                              October 2011
+
+        ABSTRACT        This plugin is a fork of the standard
+        Moodle forum activity, enhanced by the option to post
+        anonymously. Traceability of real user identities by
+        administrators is ensured, but they are concealed from
+        ordinary users and (under certain conditions) from
+        trainer roles.
+
+INTRODUCTION
+
+As the long-lasting bug MDL-1071 demonstrates, there is a continuing
+need for a Moodle activity that lets some or all members of a course
+express themselves anonymously.
+
+Previous approaches, such as the series of patches attached to MDL-1071,
+have focused on patching the standard forum activity not to display the
+names of post authors when a flag is set for a given post in the
+database.
+
+The potential for developing general means of anonymization in Moodle
+has also been recognized and documented in bug MDL-22275 and its
+accompanying wiki page, but that approach appears dormant at the moment.
+
+Anonymization is a vague concept, and there exist many possible
+interpretations and use cases for it. Ours is as follows.
+
+- Any course participant who may normally post in a forum may, in our
+  activity, choose to do so anonymously; this works the same way for
+  creating a new thread and for replying to an existing one. The choice
+  is not enforced in either way.
+- Anonymous posts are displayed in our activity as originating from an
+  'Anonymous' user, and no link to the real author is provided.
+- An anonymous post may not be edited or deleted by its author, unless
+  he or she is privileged to edit or delete any posts in the forum.
+  Trainers may edit and delete anonymous posts just like normal posts.
+- The author's ID is recorded in the Moodle database and any anonymous
+  post can be traced to its author by anyone with access to the
+  database.
+- Users are made to acknowledge conditions and warnings for posting
+  anonymously.
+
+IMPLEMENTATION
+
+Our code is a fork of the standard forum activity, altered so as to work
+as an external plug-in. We have changed the posting code so as not to
+record the real author's identity in the normal forum tables if the user
+wishes to remain anonymous, and instead to record a special anonymous
+user's ID. The real author's ID is instead written to the
+mdl_forumanon_assignment table.
+
+Except for the accounting changes and the addition of two checkboxes to
+the posting form, the code generally works the same way as in the
+standard forum.
+
+SETUP
+
+The anonymizable forum activity is installed by unzipping the archive in
+the mod/ directory of a Moodle site. Moodle version 2.1 is required.
+There should be a mod/forumanon directory after unzipping, and it is
+necessary for an administrator to open the notifications page in the
+site settings and to proceed with the prompted upgrade.
+
+After this, users with course editing rights can add this activity in
+the same manner as the normal forum.
+
+Although we have not changed the table layout for the tables that also
+exist in the standard forum, there is currently no method for importing
+the contents of such a forum into our activity. However, this should be
+easily possible by copying the data manually.
+
+The text of the conditions for anonymous posting can be found in the
+file .../mod/forumanon/lang/xx/forumanon.php, where xx is the language
+(currently either 'en' or 'de'), in the line starting with:
+        $string['anonconditiontext'] =
+and it can be changed as needed (but note that using the single quote
+character (') in your text requires it to be prefixed with a backslash:
+\').
+
+FUTURE WORK
+
+We had initially hoped to be able to implement the ideas of MDL-22275,
+but the present concept there does not seem practical. We expect,
+however, that eventually similar features will be implemented in Moodle
+and the standard forum adjusted to use them.
+
+In the meantime, possible extensions to our fork might include a UI for
+revealing user identities, a means of enforcing or denying anonymous
+posting for specific users and the integration of new changes to the
+standard forum into the forked code.
+
+We have no specific plans to carry out this work, but interested parties
+may use our git repository at https://github.com/elkinam/forumanon and
+contact us at margarita.elkina@hwr-berlin.de if they wish.
